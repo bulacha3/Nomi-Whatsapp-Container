@@ -2,6 +2,8 @@ module github.com/vhalmd/nomi-whatsapp
 
 go 1.23.1
 
+toolchain go1.23.4
+
 require (
 	fyne.io/systray v1.11.0
 	github.com/joho/godotenv v1.5.1

@@ -2,23 +2,46 @@ package main
 
 import (
 	"context"
-	"fmt"
-	_ "github.com/joho/godotenv/autoload"
-	"github.com/mdp/qrterminal/v3"
-	"github.com/vhalmd/nomi-whatsapp/internal/whatsapp"
-	waLog "go.mau.fi/whatsmeow/util/log"
-	_ "modernc.org/sqlite"
+	"log"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
+
+	"github.com/mdp/qrterminal/v3"
+	"github.com/vhalmd/nomi-whatsapp/internal/whatsapp"
+	waLog "go.mau.fi/whatsmeow/util/log"
+	_ "github.com/joho/godotenv/autoload"
+	_ "modernc.org/sqlite"
 )
 
 func main() {
+	// Configuração das variáveis de ambiente
 	nomiApiKey := os.Getenv("NOMI_API_KEY")
 	nomiID := os.Getenv("NOMI_ID")
 	nomiName := os.Getenv("NOMI_NAME")
 	openAIToken := os.Getenv("OPENAI_API_KEY")
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
 
+	// Verifica variáveis obrigatórias
+	if nomiApiKey == "" || nomiID == "" || nomiName == "" {
+		log.Fatal("As variáveis NOMI_API_KEY, NOMI_ID e NOMI_NAME são obrigatórias!")
+	}
+
+	// Inicia o servidor HTTP em uma goroutine
+	go func() {
+		http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte("Nomi WhatsApp está rodando!"))
+		})
+		log.Printf("Servidor rodando na porta %s", port)
+		log.Fatal(http.ListenAndServe(":"+port, nil))
+	}()
+
+	// Configuração do cliente WhatsApp
 	cfg := whatsapp.Config{
 		NomiAPIKey: nomiApiKey,
 		NomiID:     nomiID,
@@ -27,36 +50,42 @@ func main() {
 	}
 
 	clientLog := waLog.Stdout("CLIENT", "INFO", true)
-
 	client := whatsapp.NewClient(cfg, clientLog)
 	client.Whatsapp.AddEventHandler(client.EventHandler)
 
+	// Login ou reconexão
 	if client.Whatsapp.Store.ID == nil {
-		// No ID stored, new login
 		qrChan, _ := client.Whatsapp.GetQRChannel(context.Background())
 		err := client.Whatsapp.Connect()
 		if err != nil {
-			panic(err)
+			log.Fatalf("Erro ao conectar ao WhatsApp: %v", err)
 		}
 
 		for evt := range qrChan {
 			if evt.Event == "code" {
 				qrterminal.GenerateHalfBlock(evt.Code, qrterminal.L, os.Stdout)
 			} else {
-				fmt.Println("Login event:", evt.Event)
+				log.Printf("Evento de login: %s", evt.Event)
 			}
 		}
 	} else {
-		// Already logged in, just connect
 		err := client.Whatsapp.Connect()
 		if err != nil {
-			panic(err)
+			log.Fatalf("Erro ao conectar ao WhatsApp: %v", err)
 		}
 	}
 
+	// Finalização do programa
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
-	<-c
+	go func() {
+		<-c
+		log.Println("Desconectando o cliente do WhatsApp...")
+		client.Whatsapp.Disconnect()
+		os.Exit(0)
+	}()
 
-	client.Whatsapp.Disconnect()
+	// Aguarda sinal para finalizar
+	select {}
 }
+
