@@ -15,6 +15,24 @@ Este Bot é uma melhoria do bot do [vhalmd](https://github.com/vhalmd/nomi-whats
   - `NOMI_ID`
   - `NOMI_NAME`
   - `OPENAI_API_KEY`
+- **Arquivo `store.db`** (necessário para conectar ao WhatsApp). Caso você não tenha, siga os passos na seção "Como Gerar o Arquivo `store.db`".
+
+---
+
+## Como Gerar o Arquivo `store.db`
+
+1. **Baixe e execute o binário do Nomi-WhatsApp**:
+   - Baixe o executável do repositório original [vhalmd/nomi-whatsapp](https://github.com/vhalmd/nomi-whatsapp/releases).
+   - Execute o binário em sua máquina:
+     ```bash
+     ./nomi-whatsapp
+     ```
+2. **Escaneie o código QR**:
+   - Ao executar o binário, ele exibirá um código QR no terminal.
+   - Escaneie este código usando o aplicativo WhatsApp no seu telefone.
+3. **Geração do Arquivo**:
+   - Após escanear o código, o arquivo `store.db` será gerado automaticamente na mesma pasta onde o binário foi executado.
+   - Copie este arquivo para a raiz do projeto Nomi-Whatsapp-Container.
 
 ---
 
@@ -105,3 +123,4 @@ Contribuições são bem-vindas! Por favor, abra um Pull Request ou envie sugest
 
 ## Licença
 Este projeto está sob a licença MIT. Consulte o arquivo `LICENSE` para mais detalhes.
+
