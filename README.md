@@ -48,10 +48,10 @@ cd Nomi-Whatsapp-Container
   Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
 
   ```env
-  NOMI_API_KEY=sua_chave_api_nomi
-  NOMI_ID=seu_id_nomi
-  NOMI_NAME=seu_nome_nomi
-  OPENAI_API_KEY=sua_chave_api_openai
+  NOMI_API_KEY=Chave_API_nomi
+  NOMI_ID=nomi_id
+  NOMI_NAME=nome_do_nomi
+  OPENAI_API_KEY=chave_api_openai (se quiser caso contrario nao mencione no arquivo .env)
   ```
 
 #### Passo 1: Construa e Rode o Docker Localmente
@@ -89,6 +89,7 @@ cd Nomi-Whatsapp-Container
   ```
 
   #### Passo 5: Faça o Deploy no Cloud Run
+   ##### lembre-se que estes comandos podem variar na estrutura devido ao seu terminal 
   ```bash
     gcloud run deploy nomi-whatsapp \
       --image gcr.io/[SEU_ID_DO_PROJETO]/nomi-whatsapp \
