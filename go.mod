@@ -1,17 +1,17 @@
 module github.com/vhalmd/nomi-whatsapp
 
-go 1.23.1
+go 1.24
 
-toolchain go1.23.4
+toolchain go1.24.4
 
 require (
 	fyne.io/systray v1.11.0
 	github.com/joho/godotenv v1.5.1
-	github.com/mdp/qrterminal/v3 v3.2.0
-	github.com/sashabaranov/go-openai v1.31.0
-	github.com/vhalmd/nomi-go-sdk v0.0.3
+	github.com/mdp/qrterminal/v3 v3.2.1
+	github.com/sashabaranov/go-openai v1.40.5
+	github.com/vhalmd/nomi-go-sdk v0.1.0
 	go.mau.fi/whatsmeow v0.0.0-20241001150013-71e7937b706a
-	modernc.org/sqlite v1.33.1
+	modernc.org/sqlite v1.38.1
 )
 
 require (
@@ -20,25 +20,21 @@ require (
 	github.com/godbus/dbus/v5 v5.1.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/websocket v1.5.3 // indirect
-	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
-	github.com/mattn/go-colorable v0.1.13 // indirect
+	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/ncruces/go-strftime v0.1.9 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
-	github.com/rs/zerolog v1.33.0 // indirect
+	github.com/rs/zerolog v1.34.0 // indirect
 	go.mau.fi/libsignal v0.1.1 // indirect
-	go.mau.fi/util v0.8.0 // indirect
-	golang.org/x/crypto v0.36.0 // indirect
-	golang.org/x/exp v0.0.0-20241004190924-225e2abe05e6 // indirect
-	golang.org/x/net v0.38.0 // indirect
-	golang.org/x/sys v0.31.0 // indirect
-	golang.org/x/term v0.30.0 // indirect
-	google.golang.org/protobuf v1.34.2 // indirect
-	modernc.org/gc/v3 v3.0.0-20241004144649-1aea3fae8852 // indirect
-	modernc.org/libc v1.61.0 // indirect
-	modernc.org/mathutil v1.6.0 // indirect
-	modernc.org/memory v1.8.0 // indirect
-	modernc.org/strutil v1.2.0 // indirect
-	modernc.org/token v1.1.0 // indirect
+	go.mau.fi/util v0.8.8 // indirect
+	golang.org/x/crypto v0.40.0 // indirect
+	golang.org/x/exp v0.0.0-20250718183923-645b1fa84792 // indirect
+	golang.org/x/net v0.42.0 // indirect
+	golang.org/x/sys v0.34.0 // indirect
+	golang.org/x/term v0.33.0 // indirect
+	google.golang.org/protobuf v1.36.6 // indirect
+	modernc.org/libc v1.66.4 // indirect
+	modernc.org/mathutil v1.7.1 // indirect
+	modernc.org/memory v1.11.0 // indirect
 	rsc.io/qr v0.2.0 // indirect
 )
