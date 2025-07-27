@@ -151,11 +151,15 @@ func (a *Client) SendVoice(msg *waE2E.AudioMessage, targetJID types.JID) {
 		return
 	}
 
-	f, err := os.OpenFile("audio.mp3", os.O_RDWR|os.O_CREATE, 0664)
+	f, err := os.CreateTemp("", "audio-*.mp3")
 	if err != nil {
 		a.SendErrorMessageAudio(targetJID)
 		return
 	}
+	defer func() {
+		f.Close()
+		os.Remove(f.Name())
+	}()
 
 	err = a.Whatsapp.DownloadToFile(msg, f)
 	if err != nil {
@@ -165,7 +169,7 @@ func (a *Client) SendVoice(msg *waE2E.AudioMessage, targetJID types.JID) {
 
 	req := openai.AudioRequest{
 		Model:    openai.Whisper1,
-		FilePath: "audio.mp3",
+		FilePath: f.Name(),
 	}
 	resp, err := a.OpenAI.CreateTranscription(context.Background(), req)
 	if err != nil {
