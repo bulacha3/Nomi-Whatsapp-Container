@@ -8,10 +8,10 @@ import (
 	"os/signal"
 	"syscall"
 
+	_ "github.com/joho/godotenv/autoload"
 	"github.com/mdp/qrterminal/v3"
 	"github.com/vhalmd/nomi-whatsapp/internal/whatsapp"
 	waLog "go.mau.fi/whatsmeow/util/log"
-	_ "github.com/joho/godotenv/autoload"
 	_ "modernc.org/sqlite"
 )
 
@@ -88,4 +88,3 @@ func main() {
 	// Aguarda sinal para finalizar
 	select {}
 }
-
