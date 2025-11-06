@@ -146,25 +146,18 @@ func (a *Client) ListenQR() {
 		for evt := range qrChan {
 			switch evt.Event {
 			case "code":
-				code := strings.TrimSpace(evt.Code)
-				if code == "" {
-					fmt.Println("Received an empty QR code. Waiting for the next one…")
-					a.setQRCode("")
-					continue
-				}
-
-				if a.CurrentQRCode() != code {
+				if a.QRCode != evt.Code {
 					fmt.Println("Scan the QR code below with the WhatsApp app:")
-					qrterminal.GenerateHalfBlock(code, qrterminal.L, os.Stdout)
+					qrterminal.GenerateHalfBlock(evt.Code, qrterminal.L, os.Stdout)
 					fmt.Println()
 				}
-				a.setQRCode(code)
+				a.QRCode = evt.Code
 			case "timeout":
 				fmt.Println("QR code expired. Waiting for a new one…")
-				a.setQRCode("")
+				a.QRCode = ""
 			default:
 				fmt.Println("Waiting for a new QR code…")
-				a.setQRCode("")
+				a.QRCode = ""
 			}
 		}
 	} else {
