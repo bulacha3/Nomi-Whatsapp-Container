@@ -18,7 +18,6 @@ import (
 	"log/slog"
 	"os"
 	"strings"
-	"sync"
 	"time"
 
 	_ "modernc.org/sqlite"
@@ -31,9 +30,6 @@ type Client struct {
 
 	Logger waLog.Logger
 	Config Config
-
-	qrMu   sync.RWMutex
-	qrCode string
 }
 
 type Config struct {
@@ -121,20 +117,6 @@ func (a *Client) EventHandler(evt interface{}) {
 	}
 }
 
-func (a *Client) CurrentQRCode() string {
-	a.qrMu.RLock()
-	defer a.qrMu.RUnlock()
-
-	return a.qrCode
-}
-
-func (a *Client) setQRCode(code string) {
-	a.qrMu.Lock()
-	defer a.qrMu.Unlock()
-
-	a.qrCode = code
-}
-
 func (a *Client) ListenQR() {
 	if a.Whatsapp.Store.ID == nil {
 		qrChan, _ := a.Whatsapp.GetQRChannel(context.Background())
@@ -146,25 +128,19 @@ func (a *Client) ListenQR() {
 		for evt := range qrChan {
 			switch evt.Event {
 			case "code":
-				rawCode := evt.Code
-				if strings.TrimSpace(rawCode) == "" {
+				rawCode := strings.TrimSpace(evt.Code)
+				if rawCode == "" {
 					fmt.Println("Received an empty QR code. Waiting for the next one…")
-					a.setQRCode("")
 					continue
 				}
 
-				if a.CurrentQRCode() != rawCode {
-					fmt.Println("Scan the QR code below with the WhatsApp app:")
-					qrterminal.GenerateHalfBlock(rawCode, qrterminal.L, os.Stdout)
-					fmt.Println()
-				}
-				a.setQRCode(rawCode)
+				fmt.Println("Scan the QR code below with the WhatsApp app:")
+				qrterminal.GenerateHalfBlock(rawCode, qrterminal.L, os.Stdout)
+				fmt.Println()
 			case "timeout":
 				fmt.Println("QR code expired. Waiting for a new one…")
-				a.setQRCode("")
 			default:
 				fmt.Println("Waiting for a new QR code…")
-				a.setQRCode("")
 			}
 		}
 	} else {
