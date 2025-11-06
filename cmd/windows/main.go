@@ -110,7 +110,7 @@ func (a *API) GetQR(w http.ResponseWriter, r *http.Request) {
 
 	response := map[string]string{
 		"status": status,
-		"qr":     a.Client.QRCode,
+		"qr":     a.Client.CurrentQRCode(),
 	}
 	data, _ := json.Marshal(response)
 	w.WriteHeader(202)
