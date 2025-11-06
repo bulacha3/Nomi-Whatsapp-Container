@@ -25,18 +25,22 @@ cd Nomi-Whatsapp-Container
 ```
 ## Como Gerar o Arquivo `store.db`
 
-1. **Baixe e execute o binário do Nomi-WhatsApp**:
-   - Baixe o executável do repositório original [vhalmd/nomi-whatsapp](https://github.com/vhalmd/nomi-whatsapp/releases).
-   - Execute o binário em sua máquina ou o .exe se no Windows:
-     ```bash
-     ./nomi-whatsapp
-     ```
-2. **Escaneie o código QR**:
-   - Ao executar o binário, ele exibirá um código QR no terminal.
-   - Escaneie este código usando o aplicativo WhatsApp no seu telefone.
-3. **Geração do Arquivo**:
-   - Após escanear o código, o arquivo `store.db` será gerado automaticamente na mesma pasta onde o binário foi executado.
-   - apague o .exe ou qualquer outro arquivo ou pasta gerado e feche os terminais ou terminal e salve o `store.db`.
+1. **Compile um executável atualizado**:
+   - Instale o Go 1.24.x (ou superior compatível).
+   - Dentro deste repositório, execute `./build.sh` para gerar os binários em `bin/`.
+   - O script cria versões para Linux, macOS e Windows; escolha a que corresponde ao seu sistema.
+2. **Execute o binário a partir de um terminal**:
+   - Mantenha o arquivo `.env` na mesma pasta para que o `godotenv` carregue as variáveis automaticamente.
+   - No Windows, abra o PowerShell ou Prompt de Comando e execute `bin\nomi-whatsapp-windows-amd64.exe`.
+   - Em Linux/macOS, execute `./bin/nomi-whatsapp-linux-amd64` (ou a variante da sua arquitetura).
+   - O programa roda inteiramente no terminal e não abre mais nenhuma página web.
+3. **Escaneie o código QR exibido no terminal**:
+   - Assim que conectar ao WhatsApp, um QR code em ASCII aparecerá na tela.
+   - Escaneie com o aplicativo WhatsApp no celular. A mensagem `QR code accepted!` confirma o pareamento.
+   - Se o QR expirar, aguarde: um novo será impresso automaticamente.
+4. **Salve o arquivo gerado**:
+   - Após a autenticação, o arquivo `store.db` é criado na pasta onde você executou o binário.
+   - Faça backup desse arquivo; ele será reutilizado nos próximos deploys.
 
 ---
 

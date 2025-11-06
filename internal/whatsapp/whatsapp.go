@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/mdp/qrterminal/v3"
 	"github.com/sashabaranov/go-openai"
 	"github.com/vhalmd/nomi-go-sdk"
 	"go.mau.fi/whatsmeow"
@@ -16,6 +17,7 @@ import (
 	waLog "go.mau.fi/whatsmeow/util/log"
 	"log/slog"
 	"os"
+	"strings"
 	"time"
 
 	_ "modernc.org/sqlite"
@@ -25,7 +27,6 @@ type Client struct {
 	NomiClient nomi.API
 	Whatsapp   *whatsmeow.Client
 	OpenAI     *openai.Client
-	QRCode     string
 
 	Logger waLog.Logger
 	Config Config
@@ -117,24 +118,40 @@ func (a *Client) EventHandler(evt interface{}) {
 }
 
 func (a *Client) ListenQR() {
-	if a.Whatsapp.Store.ID == nil {
-		qrChan, _ := a.Whatsapp.GetQRChannel(context.Background())
-		err := a.Whatsapp.Connect()
-		if err != nil {
-			slog.Warn("Websocket already connected. Trying to get new QR Code.")
-		}
-
-		for evt := range qrChan {
-			if evt.Event == "code" {
-				a.QRCode = evt.Code
-			} else {
-				a.QRCode = ""
-			}
-		}
-	} else {
-		err := a.Whatsapp.Connect()
-		if err != nil {
+	if a.Whatsapp.Store.ID != nil {
+		fmt.Println("Sessão existente encontrada. Conectando sem precisar do QR code.")
+		if err := a.Whatsapp.Connect(); err != nil {
 			panic(err)
+		}
+		return
+	}
+
+	qrChan, cancel := a.Whatsapp.GetQRChannel(context.Background())
+	defer cancel()
+
+	fmt.Println("Aguardando o QR code do WhatsApp…")
+	if err := a.Whatsapp.Connect(); err != nil {
+		slog.Warn("Websocket already connected. Trying to get new QR Code.")
+	}
+
+	for evt := range qrChan {
+		switch evt.Event {
+		case "code":
+			rawCode := strings.TrimSpace(evt.Code)
+			if rawCode == "" {
+				fmt.Println("Received an empty QR code. Waiting for the next one…")
+				continue
+			}
+
+			fmt.Println("Scan the QR code below with the WhatsApp app:")
+			qrterminal.Generate(rawCode, qrterminal.L, os.Stdout)
+			fmt.Println()
+		case "timeout":
+			fmt.Println("QR code expired. Waiting for a new one…")
+		case "success":
+			fmt.Println("QR code accepted! Finalizando a conexão…")
+		default:
+			fmt.Printf("Waiting for a new QR code… (event: %s)\n", evt.Event)
 		}
 	}
 }
