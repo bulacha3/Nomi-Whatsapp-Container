@@ -118,35 +118,34 @@ func (a *Client) EventHandler(evt interface{}) {
 }
 
 func (a *Client) ListenQR() {
-	if a.Whatsapp.Store.ID == nil {
-		qrChan, _ := a.Whatsapp.GetQRChannel(context.Background())
-		err := a.Whatsapp.Connect()
-		if err != nil {
-			slog.Warn("Websocket already connected. Trying to get new QR Code.")
-		}
-
-		for evt := range qrChan {
-			switch evt.Event {
-			case "code":
-				rawCode := strings.TrimSpace(evt.Code)
-				if rawCode == "" {
-					fmt.Println("Received an empty QR code. Waiting for the next one…")
-					continue
-				}
-
-				fmt.Println("Scan the QR code below with the WhatsApp app:")
-				qrterminal.GenerateHalfBlock(rawCode, qrterminal.L, os.Stdout)
-				fmt.Println()
-			case "timeout":
-				fmt.Println("QR code expired. Waiting for a new one…")
-			default:
-				fmt.Println("Waiting for a new QR code…")
-			}
-		}
-	} else {
-		err := a.Whatsapp.Connect()
-		if err != nil {
+	if a.Whatsapp.Store.ID != nil {
+		if err := a.Whatsapp.Connect(); err != nil {
 			panic(err)
+		}
+		return
+	}
+
+	qrChan, _ := a.Whatsapp.GetQRChannel(context.Background())
+	if err := a.Whatsapp.Connect(); err != nil {
+		slog.Warn("Websocket already connected. Trying to get new QR Code.")
+	}
+
+	for evt := range qrChan {
+		switch evt.Event {
+		case "code":
+			rawCode := strings.TrimSpace(evt.Code)
+			if rawCode == "" {
+				fmt.Println("Received an empty QR code. Waiting for the next one…")
+				continue
+			}
+
+			fmt.Println("Scan the QR code below with the WhatsApp app:")
+			qrterminal.GenerateHalfBlock(rawCode, qrterminal.L, os.Stdout)
+			fmt.Println()
+		case "timeout":
+			fmt.Println("QR code expired. Waiting for a new one…")
+		default:
+			fmt.Println("Waiting for a new QR code…")
 		}
 	}
 }

@@ -17,6 +17,11 @@ func main() {
 	nomiName := os.Getenv("NOMI_NAME")
 	openAIKey := os.Getenv("OPENAI_API_KEY")
 
+	if nomiAPIKey == "" || nomiID == "" || nomiName == "" {
+		fmt.Println("NOMI_API_KEY, NOMI_ID e NOMI_NAME são obrigatórios.")
+		os.Exit(1)
+	}
+
 	cfg := whatsapp.Config{
 		NomiAPIKey: nomiAPIKey,
 		NomiID:     nomiID,
