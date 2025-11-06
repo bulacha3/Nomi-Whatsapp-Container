@@ -21,7 +21,7 @@ fi
 
 # Windows AMD64
 echo "Building for Windows (amd64)..."
-GOOS=windows GOARCH=amd64 go build -ldflags -H=windowsgui -o bin/nomi-whatsapp-windows-amd64.exe cmd/windows/main.go
+GOOS=windows GOARCH=amd64 go build -o bin/nomi-whatsapp-windows-amd64.exe cmd/windows/main.go
 if [ $? -ne 0 ]; then
     echo "Error building for Windows (amd64)"
     exit 1
