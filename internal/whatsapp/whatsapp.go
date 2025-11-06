@@ -17,6 +17,8 @@ import (
 	waLog "go.mau.fi/whatsmeow/util/log"
 	"log/slog"
 	"os"
+	"strings"
+	"sync"
 	"time"
 
 	_ "modernc.org/sqlite"
@@ -26,10 +28,12 @@ type Client struct {
 	NomiClient nomi.API
 	Whatsapp   *whatsmeow.Client
 	OpenAI     *openai.Client
-	QRCode     string
 
 	Logger waLog.Logger
 	Config Config
+
+	qrMu   sync.RWMutex
+	qrCode string
 }
 
 type Config struct {
@@ -115,6 +119,20 @@ func (a *Client) EventHandler(evt interface{}) {
 		}
 		//a.Whatsapp.Store.DeleteAllSessions()
 	}
+}
+
+func (a *Client) CurrentQRCode() string {
+	a.qrMu.RLock()
+	defer a.qrMu.RUnlock()
+
+	return a.qrCode
+}
+
+func (a *Client) setQRCode(code string) {
+	a.qrMu.Lock()
+	defer a.qrMu.Unlock()
+
+	a.qrCode = code
 }
 
 func (a *Client) ListenQR() {
