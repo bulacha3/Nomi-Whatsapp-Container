@@ -34,7 +34,25 @@ func main() {
 	sigCh := make(chan os.Signal, 1)
 	signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM)
 
-	<-sigCh
-	fmt.Println("Shutting down…")
-	client.Whatsapp.Disconnect()
+	err := http.ListenAndServe(":5555", mux)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func (a *API) GetQR(w http.ResponseWriter, r *http.Request) {
+	var status string
+	if a.Client.Whatsapp.Store.ID == nil {
+		status = "disconnected"
+	} else {
+		status = "connected"
+	}
+
+	response := map[string]string{
+		"status": status,
+		"qr":     a.Client.CurrentQRCode(),
+	}
+	data, _ := json.Marshal(response)
+	w.WriteHeader(202)
+	_, _ = w.Write(data)
 }
