@@ -25,18 +25,17 @@ cd Nomi-Whatsapp-Container
 ```
 ## Como Gerar o Arquivo `store.db`
 
-1. **Baixe e execute o binário do Nomi-WhatsApp**:
-   - Baixe o executável do repositório original [vhalmd/nomi-whatsapp](https://github.com/vhalmd/nomi-whatsapp/releases).
-   - Execute o binário em sua máquina ou o .exe se no Windows:
-     ```bash
-     ./nomi-whatsapp
-     ```
-2. **Escaneie o código QR**:
-   - Ao executar o binário, ele exibirá um código QR no terminal.
-   - Escaneie este código usando o aplicativo WhatsApp no seu telefone.
+1. **Gere e execute o binário do Nomi-WhatsApp**:
+   - Instale o Go 1.24.x (ou versão compatível) caso ainda não esteja disponível.
+   - No diretório do projeto, execute `./build.sh` para criar os executáveis em `bin/`.
+   - No Windows, execute `bin/nomi-whatsapp-windows-amd64.exe` em um Prompt de Comando; em Linux/macOS use o binário correspondente ou `go run cmd/generic/main.go`.
+   - O programa roda inteiramente no terminal e não abre mais nenhuma página web.
+2. **Escaneie o código QR exibido no terminal**:
+   - Assim que o cliente conectar, um QR code em ASCII será impresso na tela.
+   - Escaneie com o aplicativo WhatsApp no celular. A mensagem `QR code accepted!` confirma o pareamento; se o QR expirar, aguarde que um novo será mostrado automaticamente.
 3. **Geração do Arquivo**:
-   - Após escanear o código, o arquivo `store.db` será gerado automaticamente na mesma pasta onde o binário foi executado.
-   - apague o .exe ou qualquer outro arquivo ou pasta gerado e feche os terminais ou terminal e salve o `store.db`.
+   - Após escanear o código, o arquivo `store.db` é criado na pasta onde você executou o binário.
+   - Encerre o programa com `Ctrl+C` e salve o `store.db` em um local seguro para reutilizar nos próximos deploys.
 
 ---
 

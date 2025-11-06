@@ -21,7 +21,7 @@ fi
 
 # Windows AMD64
 echo "Building for Windows (amd64)..."
-GOOS=windows GOARCH=amd64 go build -ldflags -H=windowsgui -o bin/nomi-whatsapp-windows-amd64.exe cmd/windows/main.go
+GOOS=windows GOARCH=amd64 go build -o bin/nomi-whatsapp-windows-amd64.exe cmd/windows/main.go
 if [ $? -ne 0 ]; then
     echo "Error building for Windows (amd64)"
     exit 1
@@ -36,10 +36,10 @@ if [ $? -ne 0 ]; then
 fi
 
 # macOS ARM64
-echo "Building for macOS (amd64)..."
+echo "Building for macOS (arm64)..."
 GOOS=darwin GOARCH=arm64 go build -o bin/nomi-whatsapp-macos-arm64 cmd/generic/main.go
 if [ $? -ne 0 ]; then
-    echo "Error building for macOS (amd64)"
+    echo "Error building for macOS (arm64)"
     exit 1
 fi
 
