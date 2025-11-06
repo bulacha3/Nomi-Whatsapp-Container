@@ -5,7 +5,7 @@ import (
 	"io/fs"
 )
 
-//go:embed v1/dist/*
+//go:embed v1/dist/* v1/dist/assets/*
 var managementUI embed.FS
 var ManagementUI fs.FS
 

@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/mdp/qrterminal/v3"
 	"github.com/sashabaranov/go-openai"
 	"github.com/vhalmd/nomi-go-sdk"
 	"go.mau.fi/whatsmeow"
@@ -125,9 +126,19 @@ func (a *Client) ListenQR() {
 		}
 
 		for evt := range qrChan {
-			if evt.Event == "code" {
+			switch evt.Event {
+			case "code":
+				if a.QRCode != evt.Code {
+					fmt.Println("Scan the QR code below with the WhatsApp app:")
+					qrterminal.GenerateHalfBlock(evt.Code, qrterminal.L, os.Stdout)
+					fmt.Println()
+				}
 				a.QRCode = evt.Code
-			} else {
+			case "timeout":
+				fmt.Println("QR code expired. Waiting for a new one…")
+				a.QRCode = ""
+			default:
+				fmt.Println("Waiting for a new QR code…")
 				a.QRCode = ""
 			}
 		}
